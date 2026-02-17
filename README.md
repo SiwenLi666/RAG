@@ -79,10 +79,22 @@ Swagger UI:
 http://127.0.0.1:8000/docs
 
 ---
-
 ## How to Use
 
+---
+
 ### Basic Search
+
+**Swagger (Raw JSON for /docs)**
+
+```json
+{
+  "query": "chicken coconut garlic",
+  "session_id": "user1"
+}
+```
+
+**curl (Windows CMD)**
 
 ```bash
 curl -X POST "http://127.0.0.1:8000/search" ^
@@ -90,14 +102,41 @@ curl -X POST "http://127.0.0.1:8000/search" ^
   -d "{\"query\":\"chicken coconut garlic\",\"session_id\":\"user1\"}"
 ```
 
+---
+
 ### Multilingual Search (Swedish)
+
+**Swagger**
+
+```json
+{
+  "query": "kyckling med kokos och vitlök",
+  "session_id": "user1"
+}
+```
+
+**curl**
 
 ```bash
 curl -X POST "http://127.0.0.1:8000/search" ^
   -H "Content-Type: application/json" ^
   -d "{\"query\":\"kyckling med kokos och vitlök\",\"session_id\":\"user1\"}"
 ```
+
+---
+
 ### Ingredient-Driven Search
+
+**Swagger**
+
+```json
+{
+  "query": "ingredients: chicken, coconut milk, garlic",
+  "session_id": "user1"
+}
+```
+
+**curl**
 
 ```bash
 curl -X POST "http://127.0.0.1:8000/search" ^
@@ -111,23 +150,50 @@ The system detects ingredient-style queries and routes them through the hybrid r
 
 ### Multi-Step / Contextual Search (Session Memory)
 
-Step 1 — Initial Query
+Use the same session_id for follow-up queries.
 
-```bash
-curl -X POST "http://127.0.0.1:8000/search" ^
-  -H "Content-Type: application/json" ^
-  -d "{\"query\":\"thai chicken curry\",\"session_id\":\"user1\"}"
+#### Step 1 — Initial Query
+
+**Swagger**
+
+```json
+{
+  "query": "thai chicken curry",
+  "session_id": "demo_session"
+}
 ```
 
-Step 2 — Follow-up Refinement
+**curl**
 
 ```bash
 curl -X POST "http://127.0.0.1:8000/search" ^
   -H "Content-Type: application/json" ^
-  -d "{\"query\":\"make it vegetarian instead\",\"session_id\":\"user1\"}"
+  -d "{\"query\":\"thai chicken curry\",\"session_id\":\"demo_session\"}"
+```
+
+---
+
+#### Step 2 — Follow-up Refinement
+
+**Swagger**
+
+```json
+{
+  "query": "make it vegetarian instead",
+  "session_id": "demo_session"
+}
+```
+
+**curl**
+
+```bash
+curl -X POST "http://127.0.0.1:8000/search" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"query\":\"make it vegetarian instead\",\"session_id\":\"demo_session\"}"
 ```
 
 The system uses session memory to refine the search context and dynamically re-route retrieval.
+
 
 ---
 
