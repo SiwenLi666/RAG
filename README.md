@@ -97,6 +97,37 @@ curl -X POST "http://127.0.0.1:8000/search" ^
   -H "Content-Type: application/json" ^
   -d "{\"query\":\"kyckling med kokos och vitlök\",\"session_id\":\"user1\"}"
 ```
+### Ingredient-Driven Search
+
+```bash
+curl -X POST "http://127.0.0.1:8000/search" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"query\":\"ingredients: chicken, coconut milk, garlic\",\"session_id\":\"user1\"}"
+```
+
+The system detects ingredient-style queries and routes them through the hybrid retrieval pipeline (BM25 + vector similarity).
+
+---
+
+### Multi-Step / Contextual Search (Session Memory)
+
+Step 1 — Initial Query
+
+```bash
+curl -X POST "http://127.0.0.1:8000/search" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"query\":\"thai chicken curry\",\"session_id\":\"user1\"}"
+```
+
+Step 2 — Follow-up Refinement
+
+```bash
+curl -X POST "http://127.0.0.1:8000/search" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"query\":\"make it vegetarian instead\",\"session_id\":\"user1\"}"
+```
+
+The system uses session memory to refine the search context and dynamically re-route retrieval.
 
 ---
 
