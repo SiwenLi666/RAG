@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+venv311/
+.env
+
+# Vector DB / FAISS
+faiss_index/
+vectorstore/
+*.faiss
+*.index
+*.bin
+*.pkl
+*.npy
+*.npz
+
+# IDE
+.idea/
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data
+/data/
+# Generated evaluation outputs
+tests/*.json

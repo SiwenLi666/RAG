@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+pydantic
+numpy
+rank-bm25
+sentence-transformers
+faiss-cpu
+torch
+torchvision
+torchaudio
+langdetect
+pytest
+requests
