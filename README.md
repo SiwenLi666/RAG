@@ -158,7 +158,7 @@ Use the same session_id for follow-up queries.
 
 ```json
 {
-  "query": "thai chicken curry",
+  "query": "coconut chicken",
   "session_id": "demo_session"
 }
 ```
@@ -168,7 +168,8 @@ Use the same session_id for follow-up queries.
 ```bash
 curl -X POST "http://127.0.0.1:8000/search" ^
   -H "Content-Type: application/json" ^
-  -d "{\"query\":\"thai chicken curry\",\"session_id\":\"demo_session\"}"
+  -d "{\"query\":\"coconut chicken\",\"session_id\":\"demo_session\"}"
+
 ```
 
 ---
@@ -179,9 +180,10 @@ curl -X POST "http://127.0.0.1:8000/search" ^
 
 ```json
 {
-  "query": "make it vegetarian instead",
+  "query": "add garlic",
   "session_id": "demo_session"
 }
+
 ```
 
 **curl**
@@ -189,7 +191,8 @@ curl -X POST "http://127.0.0.1:8000/search" ^
 ```bash
 curl -X POST "http://127.0.0.1:8000/search" ^
   -H "Content-Type: application/json" ^
-  -d "{\"query\":\"make it vegetarian instead\",\"session_id\":\"demo_session\"}"
+  -d "{\"query\":\"add garlic\",\"session_id\":\"demo_session\"}"
+
 ```
 
 The system uses session memory to refine the search context and dynamically re-route retrieval.
