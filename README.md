@@ -125,29 +125,6 @@ curl -X POST "http://127.0.0.1:8000/search" ^
 
 ---
 
-### Ingredient-Driven Search
-
-**Swagger**
-
-```json
-{
-  "query": "ingredients: chicken, coconut milk, garlic",
-  "session_id": "user1"
-}
-```
-
-**curl**
-
-```bash
-curl -X POST "http://127.0.0.1:8000/search" ^
-  -H "Content-Type: application/json" ^
-  -d "{\"query\":\"ingredients: chicken, coconut milk, garlic\",\"session_id\":\"user1\"}"
-```
-
-The system detects ingredient-style queries and routes them through the hybrid retrieval pipeline (BM25 + vector similarity).
-
----
-
 ### Multi-Step / Contextual Search (Session Memory)
 
 Use the same session_id for follow-up queries.
