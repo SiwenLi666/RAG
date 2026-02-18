@@ -30,11 +30,14 @@ class SearchService:
         # 3) enhanced query
         enhanced_query = container.memory.build_enhanced_query(session_id, translated_query)
 
-        # 4) retrieval mode switch
-        mode = (request.retrieval_mode or "hybrid").strip().lower()
+        # 4) retrieval mode switch (optional override)
+        mode = None
+        if request.retrieval_mode:
+            mode = request.retrieval_mode.strip().lower()
 
-        # RouterRetriever.search supports mode
+        # Router will fall back to its default_mode if mode is None
         search_results = container.retriever.search(enhanced_query, TOP_K, mode=mode)
+
 
         results: List[ResultItem] = []
         for item in search_results:

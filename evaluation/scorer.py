@@ -1,22 +1,22 @@
 def score_rank(expected_id, returned_ids):
+    # Negative test: expect no strong match
     if expected_id is None:
-        # negative test
-        return 100 if not returned_ids else 0
+        return 100 if not returned_ids else 50
+
+    if not returned_ids:
+        return 0
 
     if expected_id not in returned_ids:
-        return 0
+        return 30  # partial relevance: something was retrieved
 
     rank = returned_ids.index(expected_id) + 1
 
+    # Soft ranking penalty
     if rank == 1:
         return 100
-    elif rank == 2:
+    elif rank <= 3:
         return 90
-    elif rank == 3:
+    elif rank <= 5:
         return 80
-    elif rank == 4:
-        return 70
-    elif rank == 5:
-        return 60
     else:
-        return 50
+        return 70

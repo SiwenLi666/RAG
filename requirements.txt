@@ -11,3 +11,4 @@ torchaudio
 langdetect
 pytest
 requests
+pylint

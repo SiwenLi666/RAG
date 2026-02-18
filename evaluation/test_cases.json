@@ -1,147 +1,122 @@
 [
   {
     "id": "T01",
-    "category": "single_step",
-    "difficulty": "easy",
-    "query": "all purpose flour salt",
+    "category": "progressive_refinement",
+    "difficulty": "medium",
+    "steps": [
+      "stick cold butter",
+      "stick cold butter all purpose flour",
+      "stick cold butter all purpose flour seasoned salt",
+      "stick cold butter all purpose flour seasoned salt sausage gravy"
+    ],
     "expected_id": "5160756b96cc62079cc2db15"
   },
   {
     "id": "T02",
-    "category": "single_step",
-    "difficulty": "easy",
-    "query": "poppy seeds mayonnaise",
-    "expected_id": "5160756d96cc62079cc2db16"
-  },
-  {
-    "id": "T03",
-    "category": "single_step",
-    "difficulty": "easy",
-    "query": "cumin seeds honey",
+    "category": "progressive_refinement",
+    "difficulty": "medium",
+    "steps": [
+      "g mint torn",
+      "g mint torn cumin seeds",
+      "g mint torn cumin seeds lemon juice",
+      "g mint torn cumin seeds lemon juice cayenne pepper"
+    ],
     "expected_id": "5160756f96cc6207a37ff777"
   },
   {
-    "id": "T04",
-    "category": "single_step",
-    "difficulty": "easy",
-    "query": "sweet yogurt cream all purpose flour",
+    "id": "T03",
+    "category": "progressive_refinement",
+    "difficulty": "medium",
+    "steps": [
+      "stick cold butter",
+      "stick cold butter all purpose flour",
+      "stick cold butter all purpose flour cold heavy cream",
+      "stick cold butter all purpose flour cold heavy cream sweet yogurt cream"
+    ],
     "expected_id": "5160757096cc62079cc2db17"
   },
   {
-    "id": "T05",
-    "category": "single_step",
-    "difficulty": "easy",
-    "query": "pomegranate juice for each bowl",
-    "expected_id": "5160757496cc6207a37ff778"
-  },
-  {
-    "id": "T06",
-    "category": "single_step",
-    "difficulty": "easy",
-    "query": "butter assorted sprinkles",
+    "id": "T04",
+    "category": "progressive_refinement",
+    "difficulty": "medium",
+    "steps": [
+      "rice krispies",
+      "rice krispies assorted sprinkles",
+      "rice krispies assorted sprinkles plastic easter eggs",
+      "rice krispies assorted sprinkles plastic easter eggs package mini marshmallows"
+    ],
     "expected_id": "5160757596cc62079cc2db18"
   },
   {
-    "id": "T07",
-    "category": "single_step",
-    "difficulty": "easy",
-    "query": "walnut oil feta",
+    "id": "T05",
+    "category": "progressive_refinement",
+    "difficulty": "medium",
+    "steps": [
+      "handfuls spinach",
+      "handfuls spinach kamut uncooked",
+      "handfuls spinach kamut uncooked red chili flakes",
+      "handfuls spinach kamut uncooked red chili flakes sunflower seeds"
+    ],
     "expected_id": "5160757596cc6207aada322f"
   },
   {
+    "id": "T06",
+    "category": "description_refinement",
+    "difficulty": "hard",
+    "steps": [
+      "drop biscuits",
+      "drop biscuits seasoned salt",
+      "drop biscuits seasoned salt all purpose flour",
+      "drop biscuits seasoned salt all purpose flour baking powder"
+    ],
+    "expected_id": "5160756b96cc62079cc2db15"
+  },
+  {
+    "id": "T07",
+    "category": "description_refinement",
+    "difficulty": "hard",
+    "steps": [
+      "hot roast",
+      "hot roast dash of worcestershire",
+      "hot roast dash of worcestershire poppy seeds",
+      "hot roast dash of worcestershire poppy seeds spicy mustard"
+    ],
+    "expected_id": "5160756d96cc62079cc2db16"
+  },
+  {
     "id": "T08",
-    "category": "single_step",
-    "difficulty": "medium",
-    "query": "ground sumac toasted sesame seeds all purpose flour",
-    "expected_id": "5160757696cc6207a37ff779"
+    "category": "description_refinement",
+    "difficulty": "hard",
+    "steps": [
+      "morrocan carrot",
+      "morrocan carrot cumin seeds",
+      "morrocan carrot cumin seeds cayenne pepper",
+      "morrocan carrot cumin seeds cayenne pepper g mint torn"
+    ],
+    "expected_id": "5160756f96cc6207a37ff777"
   },
   {
     "id": "T09",
-    "category": "single_step",
+    "category": "multilingual_progressive",
     "difficulty": "medium",
-    "query": "baking soda honey all purpose flour",
-    "expected_id": "5160757796cc6207aada3230"
+    "steps": [
+      "all purpose flour",
+      "all purpose flour stick cold butter",
+      "all purpose flour stick cold butter baking powder",
+      "all purpose flour stick cold butter baking powder sausage gravy"
+    ],
+    "expected_id": "5160756b96cc62079cc2db15"
   },
   {
     "id": "T10",
-    "category": "single_step",
+    "category": "multilingual_progressive",
     "difficulty": "medium",
-    "query": "apple cider vinegar spicy brown mustard all purpose flour",
-    "expected_id": "5160757896cc62079cc2db1a"
-  },
-  {
-    "id": "T11",
-    "category": "single_step",
-    "difficulty": "medium",
-    "query": "zest of orange water all purpose flour",
-    "expected_id": "5160757a96cc62079cc2db1b"
-  },
-  {
-    "id": "T12",
-    "category": "multi_step",
-    "difficulty": "hard",
     "steps": [
-      "heavy cream bittersweet chocolate chopped",
-      "tsp ground cinnamon"
+      "cayenne pepper",
+      "cayenne pepper g mint torn",
+      "cayenne pepper g mint torn lemon juice",
+      "cayenne pepper g mint torn lemon juice cumin seeds"
     ],
-    "expected_id": "5160757a96cc6207b12d18da"
-  },
-  {
-    "id": "T13",
-    "category": "multi_step",
-    "difficulty": "hard",
-    "steps": [
-      "unsalted butter baking powder",
-      "ml milk"
-    ],
-    "expected_id": "5160757b96cc6207a37ff77a"
-  },
-  {
-    "id": "T14",
-    "category": "multi_step",
-    "difficulty": "hard",
-    "steps": [
-      "handfuls spinach chopped olive oil",
-      "garlic in half"
-    ],
-    "expected_id": "5160757b96cc6207aada3231"
-  },
-  {
-    "id": "T15",
-    "category": "multi_step",
-    "difficulty": "hard",
-    "steps": [
-      "grainy dijon mustard mayonnaise",
-      "avocado slices"
-    ],
-    "expected_id": "5160757c96cc62079cc2db1c"
-  },
-  {
-    "id": "T16",
-    "category": "multilingual",
-    "difficulty": "hard",
-    "query": "a poached \u00e4gg cooked brown rice",
-    "expected_id": "5160757d96cc6207a37ff77b"
-  },
-  {
-    "id": "T17",
-    "category": "multilingual",
-    "difficulty": "hard",
-    "query": "tsp baking powder warm water",
-    "expected_id": "5160757d96cc6207aada3232"
-  },
-  {
-    "id": "T18",
-    "category": "stability",
-    "difficulty": "medium",
-    "query": "stick of butter eggs beaten",
-    "expected_id": "5160757d96cc6207b12d18db"
-  },
-  {
-    "id": "T19",
-    "category": "negative",
-    "difficulty": "hard",
-    "query": "all purpose flour poppy seeds cumin seeds",
-    "expected_id": null
+    "expected_id": "5160756f96cc6207a37ff777"
   }
 ]

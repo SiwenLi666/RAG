@@ -7,8 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATASET_PATH = BASE_DIR / "data" / "20170107-061401-recipeitems.json"
 OUTPUT_PATH = BASE_DIR / "evaluation" / "test_cases.json"
 
-
-random.seed(42)  # deterministic
+random.seed(42)
 
 STOPWORDS = {
     "cup", "cups", "tablespoon", "tablespoons", "teaspoon", "teaspoons",
@@ -25,122 +24,131 @@ SWEDISH_MAP = {
     "milk": "mjölk"
 }
 
+
 def clean_ingredient_line(line):
     line = line.lower()
     line = re.sub(r"[\d/]+", "", line)
-    words = re.findall(r"[a-zA-Z]+", line)
+    words = re.findall(r"[a-zA-ZäöåÄÖÅ]+", line)
     words = [w for w in words if w not in STOPWORDS]
     return " ".join(words).strip()
+
 
 def extract_core_ingredients(recipe):
     lines = recipe.get("ingredients", "").split("\n")
     cleaned = [clean_ingredient_line(l) for l in lines]
-    cleaned = [c for c in cleaned if len(c.split()) <= 3 and len(c) > 3]
+    cleaned = [c for c in cleaned if 1 < len(c.split()) <= 3]
     return list(set(cleaned))
+
 
 def translate_query(query):
     words = query.split()
     return " ".join([SWEDISH_MAP.get(w, w) for w in words])
 
+
+def generate_progressive_test(recipe, test_id):
+    ingredients = extract_core_ingredients(recipe)
+    if len(ingredients) < 4:
+        return None
+
+    random.shuffle(ingredients)
+
+    steps = []
+    base = []
+
+    for i in range(4):
+        base.append(ingredients[i])
+        steps.append(" ".join(base))
+
+    return {
+        "id": test_id,
+        "category": "progressive_refinement",
+        "difficulty": "medium",
+        "steps": steps,
+        "expected_id": recipe["_id"]["$oid"]
+    }
+
+
+def generate_description_test(recipe, test_id):
+    ingredients = extract_core_ingredients(recipe)
+    if len(ingredients) < 3:
+        return None
+
+    random.shuffle(ingredients)
+
+    name_words = recipe.get("name", "").lower().split()[:2]
+    steps = [" ".join(name_words)]
+
+    base = name_words.copy()
+    for i in range(3):
+        base.append(ingredients[i])
+        steps.append(" ".join(base))
+
+    return {
+        "id": test_id,
+        "category": "description_refinement",
+        "difficulty": "hard",
+        "steps": steps,
+        "expected_id": recipe["_id"]["$oid"]
+    }
+
+
+def generate_multilingual_test(recipe, test_id):
+    base_test = generate_progressive_test(recipe, test_id)
+    if not base_test:
+        return None
+
+    base_test["steps"] = [translate_query(s) for s in base_test["steps"]]
+    base_test["category"] = "multilingual_progressive"
+    base_test["difficulty"] = "medium"
+    return base_test
+
+
 def main():
     recipes = []
+
     with open(DATASET_PATH, "r", encoding="utf-8") as f:
         for line in f:
             recipes.append(json.loads(line))
 
     recipes = [r for r in recipes if "ingredients" in r and "name" in r]
 
-    selected = recipes[:20]
+    selected = recipes[:30]
 
     tests = []
+    counter = 1
 
-    # 8 single-step
-    for i, r in enumerate(selected[:8]):
-        ingredients = extract_core_ingredients(r)
-        if len(ingredients) < 2:
-            continue
-        query = " ".join(ingredients[:2])
-        tests.append({
-            "id": f"T{i+1:02}",
-            "category": "single_step",
-            "difficulty": "easy",
-            "query": query,
-            "expected_id": r["_id"]["$oid"]
-        })
+    # 5 progressive ingredient refinement
+    for r in selected:
+        if len(tests) >= 5:
+            break
+        test = generate_progressive_test(r, f"T{counter:02}")
+        if test:
+            tests.append(test)
+            counter += 1
 
-    # 4 noise tests
-    for i, r in enumerate(selected[8:12]):
-        ingredients = extract_core_ingredients(r)
-        if len(ingredients) < 2:
-            continue
-        noise = extract_core_ingredients(selected[0])[0]
-        query = " ".join(ingredients[:2]) + " " + noise
-        tests.append({
-            "id": f"T{len(tests)+1:02}",
-            "category": "single_step",
-            "difficulty": "medium",
-            "query": query,
-            "expected_id": r["_id"]["$oid"]
-        })
-
-    # 4 multi-step
-    for i, r in enumerate(selected[12:16]):
-        ingredients = extract_core_ingredients(r)
-        if len(ingredients) < 3:
-            continue
-        tests.append({
-            "id": f"T{len(tests)+1:02}",
-            "category": "multi_step",
-            "difficulty": "hard",
-            "steps": [
-                " ".join(ingredients[:2]),
-                ingredients[2]
-            ],
-            "expected_id": r["_id"]["$oid"]
-        })
+    # 3 description refinement
+    for r in selected:
+        if len(tests) >= 8:
+            break
+        test = generate_description_test(r, f"T{counter:02}")
+        if test:
+            tests.append(test)
+            counter += 1
 
     # 2 multilingual
-    for r in selected[16:18]:
-        ingredients = extract_core_ingredients(r)
-        if len(ingredients) < 2:
-            continue
-        query = " ".join(ingredients[:2])
-        tests.append({
-            "id": f"T{len(tests)+1:02}",
-            "category": "multilingual",
-            "difficulty": "hard",
-            "query": translate_query(query),
-            "expected_id": r["_id"]["$oid"]
-        })
-
-    # 1 stability
-    r = selected[18]
-    ingredients = extract_core_ingredients(r)
-    tests.append({
-        "id": f"T{len(tests)+1:02}",
-        "category": "stability",
-        "difficulty": "medium",
-        "query": " ".join(ingredients[:2]),
-        "expected_id": r["_id"]["$oid"]
-    })
-
-    # 1 negative
-    r1, r2, r3 = selected[0], selected[1], selected[2]
-    ing1 = extract_core_ingredients(r1)[0]
-    ing2 = extract_core_ingredients(r2)[0]
-    ing3 = extract_core_ingredients(r3)[0]
-    tests.append({
-        "id": f"T{len(tests)+1:02}",
-        "category": "negative",
-        "difficulty": "hard",
-        "query": f"{ing1} {ing2} {ing3}",
-        "expected_id": None
-    })
+    for r in selected:
+        if len(tests) >= 10:
+            break
+        test = generate_multilingual_test(r, f"T{counter:02}")
+        if test:
+            tests.append(test)
+            counter += 1
 
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
-        json.dump(tests, f, indent=2)
+        json.dump(tests, f, indent=2, ensure_ascii=False)
 
-    print("Generated 20 fixed test cases.")
+    print(f"Generated {len(tests)} clean progressive test cases.")
+
 
 if __name__ == "__main__":
     main()

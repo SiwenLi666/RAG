@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from app.core.config import RETRIEVER_TYPE
+
 from app.retrieval.local_embedding_client import LocalEmbeddingClient
 from app.retrieval.vector_index import VectorIndex, VectorIndexArtifacts
 from app.retrieval.vector_retriever import VectorRetriever
@@ -13,25 +15,11 @@ from app.retrieval.router_retriever import RouterRetriever
 def create_retriever(
     index_memory,
     data_dir: Path,
-    default_mode: str = "hybrid",
+    default_mode: str | None = None,
     embed_model: str = "all-MiniLM-L6-v2",
 ) -> RouterRetriever:
 
-    # -------------------------------------------------
-    # Embedding client (FORCE CPU — RTX 5090 unsupported)
-    # -------------------------------------------------
-    client = LocalEmbeddingClient(
-        model_name=embed_model,
-        device="cpu",  # 🔴 FORCE CPU
-    )
-
-    artifacts = VectorIndexArtifacts(
-        embeddings_path=data_dir / "embeddings.npy",
-        faiss_index_path=data_dir / "faiss.index",
-        id_map_path=data_dir / "id_map.json",
-    )
-
-    vindex = VectorIndex(client=client, artifacts=artifacts)
+    mode = (default_mode or RETRIEVER_TYPE or "hybrid").strip().lower()
 
     # -------------------------------------------------
     # Load documents
@@ -50,33 +38,87 @@ def create_retriever(
             "(documents/_documents/get_documents/all)."
         )
 
-    # -------------------------------------------------
-    # Build / Load Vector Index
-    # -------------------------------------------------
-    vindex.build_and_save(
-        documents=docs,
-        text_getter=lambda d: getattr(d, "text", "") or "",
-        id_getter=lambda d: getattr(d, "id", ""),
-        force_rebuild=False,
-        batch_size=256,     # larger batches for CPU
-        max_chars=2000,     # prevent huge text overflow
-    )
+    bm25 = None
+    vector = None
+    hybrid = None
 
     # -------------------------------------------------
-    # BM25
+    # BM25 Mode
     # -------------------------------------------------
-    bm25 = BM25Retriever(index_memory=index_memory)
-    bm25.build()
+    if mode == "bm25":
+        bm25 = BM25Retriever(index_memory=index_memory)
+        bm25.build()
 
     # -------------------------------------------------
-    # Hybrid Router
+    # Vector Mode
     # -------------------------------------------------
-    vector = VectorRetriever(index_memory=index_memory, vector_index=vindex)
-    hybrid = HybridRetriever(bm25=bm25, vector=vector)
+    elif mode == "vector":
+        client = LocalEmbeddingClient(
+            model_name=embed_model,
+            device="cpu",
+        )
+
+        artifacts = VectorIndexArtifacts(
+            embeddings_path=data_dir / "embeddings.npy",
+            faiss_index_path=data_dir / "faiss.index",
+            id_map_path=data_dir / "id_map.json",
+        )
+
+        vindex = VectorIndex(client=client, artifacts=artifacts)
+
+        vindex.build_and_save(
+            documents=docs,
+            text_getter=lambda d: getattr(d, "text", "") or "",
+            id_getter=lambda d: getattr(d, "id", ""),
+            force_rebuild=False,
+            batch_size=256,
+            max_chars=2000,
+        )
+
+        vector = VectorRetriever(index_memory=index_memory, vector_index=vindex)
+
+    # -------------------------------------------------
+    # Hybrid Mode
+    # -------------------------------------------------
+    elif mode == "hybrid":
+        # Build BM25
+        bm25 = BM25Retriever(index_memory=index_memory)
+        bm25.build()
+
+        # Build Vector
+        client = LocalEmbeddingClient(
+            model_name=embed_model,
+            device="cpu",
+        )
+
+        artifacts = VectorIndexArtifacts(
+            embeddings_path=data_dir / "embeddings.npy",
+            faiss_index_path=data_dir / "faiss.index",
+            id_map_path=data_dir / "id_map.json",
+        )
+
+        vindex = VectorIndex(client=client, artifacts=artifacts)
+
+        vindex.build_and_save(
+            documents=docs,
+            text_getter=lambda d: getattr(d, "text", "") or "",
+            id_getter=lambda d: getattr(d, "id", ""),
+            force_rebuild=False,
+            batch_size=256,
+            max_chars=2000,
+        )
+
+        vector = VectorRetriever(index_memory=index_memory, vector_index=vindex)
+        hybrid = HybridRetriever(bm25=bm25, vector=vector)
+
+    else:
+        raise ValueError(
+            f"Invalid RETRIEVER_TYPE '{mode}'. Use bm25 | vector | hybrid."
+        )
 
     return RouterRetriever(
         bm25=bm25,
         vector=vector,
         hybrid=hybrid,
-        default_mode=default_mode,
+        default_mode=mode,
     )

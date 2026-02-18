@@ -12,7 +12,8 @@ ACTIVE_DOMAIN = "structured_text"
 DATASET_FILE = "20170107-061401-recipeitems.json"
 
 # Retrieval
-RETRIEVER_TYPE = "hybrid"
+RETRIEVER_TYPE = "hybrid"  # "hybrid" or "bm25" or "vector"
+
 TOP_K = 20
 
 
